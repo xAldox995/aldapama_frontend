@@ -1,69 +1,71 @@
 import { useEffect, useState } from "react";
 import PageData from "../interfaces/PageData";
 
-
-
 const Invoices = () => {
-
-    const [data, setData] = useState<PageData>({
-        totalElements: 0,
-        totalPages: 0,
-        size: 0,
-        content: [
-          {
-            id: 0,
-            data: "2024-11-14",
-            importo: 0,
-            numFatt: "string",
-            stato: {
-              id: 0,
-              descrizione: "string",
-            },
-            utente: {
-              id: 0,
-              username: "string",
-              email: "string",
-              nome: "string",
-              cognome: "string",
-              avatar: "string",
-            },
-            cliente: {
-              id: 0,
-              ragioneSociale: "string",
-              partitaIva: "string",
-              dataInserimento: "2024-11-14T14:30:54.665Z",
-              dataUltimoContatto: "2024-11-14T14:30:54.665Z",
-              pec: "string",
-              telefono: "string",
-              logoAziendale: "string",
-            },
-          },
-        ],
-        number: 0,
-        sort: { empty: true, sorted: true, unsorted: true },
-        numberOfElements: 0,
-        first: true,
-        last: true,
-        pageable: {
-          offset: 0,
-          sort: { empty: true, sorted: true, unsorted: true },
-          unpaged: true,
-          pageSize: 0,
-          pageNumber: 0,
-          paged: true,
+  const [data, setData] = useState<PageData>({
+    totalElements: 0,
+    totalPages: 0,
+    size: 0,
+    content: [
+      {
+        id: 0,
+        data: "2024-11-14",
+        importo: 0,
+        numFatt: "string",
+        stato: {
+          id: 0,
+          descrizione: "string",
         },
-        empty: true, 
-    });
-    const [loading, setLoading] = useState(true);
+        utente: {
+          id: 0,
+          username: "string",
+          email: "string",
+          nome: "string",
+          cognome: "string",
+          avatar: "string",
+        },
+        cliente: {
+          id: 0,
+          ragioneSociale: "string",
+          partitaIva: "string",
+          dataInserimento: "2024-11-14T14:30:54.665Z",
+          dataUltimoContatto: "2024-11-14T14:30:54.665Z",
+          pec: "string",
+          telefono: "string",
+          logoAziendale: "string",
+        },
+      },
+    ],
+    number: 0,
+    sort: { empty: true, sorted: true, unsorted: true },
+    numberOfElements: 0,
+    first: true,
+    last: true,
+    pageable: {
+      offset: 0,
+      sort: { empty: true, sorted: true, unsorted: true },
+      unpaged: true,
+      pageSize: 0,
+      pageNumber: 0,
+      paged: true,
+    },
+    empty: true,
+  });
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-    
-
-      const fetchFatture = (page = 0) => {
+  const fetchFatture = (page = 0) => {
     const fattureURL = `http://localhost:3002/fatture?page=${page}&size=10&sortBy=id`;
+    const token = localStorage.getItem("JWT");
 
     setLoading(true);
-    fetch(fattureURL)
+    fetch(fattureURL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Errore HTTP! Stato: ${response.status}`);
@@ -83,27 +85,24 @@ const Invoices = () => {
       });
   };
 
+  useEffect(() => {
+    fetchFatture();
+  }, []);
 
-      useEffect(() => {
-        fetchFatture();
-      }, []);
+  const handleNextPage = () => {
+    if (!data.last) {
+      fetchFatture(data.number + 1);
+    }
+  };
 
-      const handleNextPage = () => {
-        if (!data.last) {
-          fetchFatture(data.number + 1);
-        }
-      };
+  const handlePreviousPage = () => {
+    if (!data.first) {
+      fetchFatture(data.number - 1);
+    }
+  };
 
-      const handlePreviousPage = () => {
-        if (!data.first) {
-          fetchFatture(data.number - 1);
-        }
-      };
-    
-
-
-    return (
-<div className="container py-4">
+  return (
+    <div className="container py-4">
       <h1 className="text-center mb-4">Elenco Fatture</h1>
       <table className="table table-bordered table-striped table-hover">
         <thead className="table-dark">
@@ -167,7 +166,7 @@ const Invoices = () => {
         </button>
       </div>
     </div>
-    )
-}
+  );
+};
 
 export default Invoices;

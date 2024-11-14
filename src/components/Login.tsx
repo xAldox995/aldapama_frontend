@@ -12,9 +12,14 @@ const Login = () => {
         password: string
     }
 
-    const handleJWT = (token :string) => {
+    interface token {
+        token: string
+    }
 
-        localStorage.setItem("JWT", token)
+
+    const handleJWT = (token :token) => {
+
+        localStorage.setItem("JWT", token.token)
 
     }
 
@@ -27,7 +32,7 @@ const Login = () => {
             password: password
         }
 
-        fetch("http://localhost:3001/auth/login", {
+        fetch("http://localhost:3002/auth/login", {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
