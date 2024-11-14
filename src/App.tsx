@@ -1,16 +1,15 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import { Col, Container, Row } from 'react-bootstrap';
 import './App.css'
+import { Route, Routes } from 'react-router';
+import Login from './components/Login';
+import Invoices from './components/Invoices';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <Container fluid>
-      Ciao Aldo king delle bestemmie
-    </Container>
+    <Routes>
+      <Route path='/' element={<Login />} />
+      <Route path='/invoices' element={<Invoices />} />
+    </Routes>
   )
 }
 
