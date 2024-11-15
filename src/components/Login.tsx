@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import { POSTFetch } from "../modules/fetch";
 
 
 const Login = () => {
@@ -36,25 +37,9 @@ const Login = () => {
             password: password
         }
 
-        fetch("http://localhost:3002/auth/login", {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(loginData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Errore nella richiesta');
-                }
-                return response.json();
-            })
-            .then(data => {
-                handleJWT(data);
-            })
-            .catch(error => {
-                console.error('Errore:', error);
-            });
+
+        POSTFetch("/auth/login", loginData, handleJWT)
+
 
     }
 
