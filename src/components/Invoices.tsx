@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import PageData from "../interfaces/PageData";
+import { GETFetch } from "../modules/fetch";
 
 const Invoices = () => {
   const [data, setData] = useState<PageData>({
@@ -54,34 +55,25 @@ const Invoices = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchFatture = (page = 0) => {
-    const fattureURL = `http://localhost:3002/fatture?page=${page}&size=10&sortBy=id`;
-    const token = localStorage.getItem("JWT");
+  const checkResponse=(response:any)=>{
+    setData(response);
+    setError(null);
+  }
 
+  const errorResponse = (error: any) => {
+    setError("Errore durante il caricamento delle fatture.");
+  console.error("Errore durante il fetch delle fatture:", error);
+  }
+
+  const finallyCase =()=>{
+    setLoading(false);
+  }
+  
+  const fetchFatture = (page: number=0, size: number=10, sort: string= "id") => {
     setLoading(true);
-    fetch(fattureURL, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Errore HTTP! Stato: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-        setError(null);
-      })
-      .catch((error) => {
-        setError("Errore durante il caricamento delle fatture.");
-        console.error("Errore durante il fetch delle fatture:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const queryParams = `?page=${page}&size=${size}&sort=${sort}`;
+    GETFetch("/fatture"+queryParams,checkResponse, errorResponse,finallyCase);
+
   };
 
   useEffect(() => {
