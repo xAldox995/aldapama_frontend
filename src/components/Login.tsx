@@ -1,11 +1,14 @@
 import { FormEvent, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { useNavigate } from "react-router";
 
 
 const Login = () => {
 
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+
+    const navigate = useNavigate();
 
     interface loginDTO {
         username: string,
@@ -19,7 +22,8 @@ const Login = () => {
 
     const handleJWT = (token :token) => {
 
-        localStorage.setItem("JWT", token.token)
+        localStorage.setItem("JWT", token.token);
+        navigate('/invoices');
 
     }
 
